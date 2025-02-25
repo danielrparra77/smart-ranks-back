@@ -1,0 +1,1 @@
+export type JestMockedClass<T> = jest.MockedObjectDeep<Partial<T>>
