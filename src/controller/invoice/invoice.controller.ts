@@ -1,8 +1,7 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { IInvoiceService } from '../../core/invoice/invoice.service';
 import { Roles } from '../../common/decorator/roles.decorator';
 import { RoleEnum } from '../../common/enum/role.enum';
-import { InvoiceDto } from '../dto/invoice/invoice.dto';
 import { IInvoice } from '../../core/entity/invoice.entity';
 
 @Controller({path: 'invoice'})
@@ -18,8 +17,8 @@ export class InvoiceController {
   @Get()
   @Roles([RoleEnum.administrator])
   findById(
-    @Body() invoiveDto: InvoiceDto,
+    @Query('id') id: string,
   ): Promise<IInvoice> {
-    return this.invoiceService.findInvoiceById(invoiveDto.id);
+    return this.invoiceService.findInvoiceById(id);
   }
 }

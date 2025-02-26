@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query, Req } from '@nestjs/common';
 import { IProductService } from '../../core/product/product.service';
 import { Roles } from '../../common/decorator/roles.decorator';
 import { RoleEnum } from '../../common/enum/role.enum';
@@ -8,6 +8,7 @@ import { IProduct } from '../../core/entity/product.entity';
 import { ProductDto } from '../dto/product/product.dto';
 import { PurchaseProductDto } from '../dto/product/purchase.dto';
 import { IProductToPurchase } from '../../core/entity/purchase.entity';
+import { IInvoice } from '../../core/entity/invoice.entity';
 
 @Controller({path: 'product'})
 export class ProductController {
@@ -18,6 +19,12 @@ export class ProductController {
   findAll(@Req() request: Request): Promise<IProduct[]> {
     const credentials = (request as any).userData as IUserCredentials;
     return this.productService.findAllProducts(credentials);
+  }
+
+  @Get('ids')
+  @Roles([RoleEnum.administrator, RoleEnum.user])
+  findByIds(@Query() request: {_id: string[]}): Promise<IProduct[]> {
+    return this.productService.findProductsById(request._id);
   }
 
   @Post()
@@ -34,11 +41,10 @@ export class ProductController {
   async purchaseProduct(
     @Body() purchase: PurchaseProductDto,
     @Req() request: Request,
-  ): Promise<void> {
+  ): Promise<IInvoice> {
     const credentials = (request as any).userData as IUserCredentials;
     const products = this.formatProductsToPruchase(purchase);
-    await this.productService.purchaseProduct(products, credentials);
-    return;
+    return await this.productService.purchaseProduct(products, credentials);
   }
 
   private formatProductsToPruchase(purchase: PurchaseProductDto): IProductToPurchase[] {

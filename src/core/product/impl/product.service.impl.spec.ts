@@ -14,6 +14,7 @@ import { UserRoleUC } from '../../role/impl/user-role.uc';
 import { IInvoiceService } from '../../invoice/invoice.service';
 import { invoiceMock } from '../../../../test/mock/invoice.mock';
 import { NotAcceptableException } from '@nestjs/common';
+import { IUserProvider } from '../../../data-provider/user/user.provider';
 
 describe('ProductService', () => {
   let mockData: Product;
@@ -35,6 +36,12 @@ describe('ProductService', () => {
     findInvoiceById: jest.fn(),
     upsertInvoice: jest.fn(),
   };
+  const userProvider: JestMockedClass<IUserProvider> = {
+    findUsers: jest.fn(),
+    findUserByFilter: jest.fn().mockResolvedValue(userMockData),
+    upsertUser: jest.fn(),
+    deleteUser: jest.fn(),
+  };
 
   let orderService: IProductService;
   let productPProvider: IProductProvider;
@@ -54,6 +61,10 @@ describe('ProductService', () => {
         {
           provide: IInvoiceService,
           useValue: invoiceService,
+        },
+        {
+          provide: IUserProvider,
+          useValue: userProvider,
         },
       ],
     }).compile();
@@ -75,6 +86,15 @@ describe('ProductService', () => {
 
   afterEach(()=>{
     jest.clearAllMocks();
+  });
+
+  describe('findProductsById', () => {
+    it('should find products by id', async () => {
+      const spy = jest.spyOn(productPProvider, 'findAllProducts');
+      spy.mockResolvedValueOnce([mockData]);
+      expect(await orderService.findProductsById([mockData.id])).toEqual([mockData]);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('findProductById', () => {
@@ -110,7 +130,14 @@ describe('ProductService', () => {
   });
 
   describe('upsertProduct', () => {
-    it('should upsert propuct', async () => {
+    it('should upsert new propuct', async () => {
+      delete (mockData as any).id
+      const spy = jest.spyOn(productPProvider, 'upsertProduct');
+      spy.mockResolvedValueOnce(mockData);
+      await orderService.upsertProduct(mockData);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+    it('should upsert existing propuct', async () => {
       const spy = jest.spyOn(productPProvider, 'upsertProduct');
       spy.mockResolvedValueOnce(mockData);
       await orderService.upsertProduct(mockData);

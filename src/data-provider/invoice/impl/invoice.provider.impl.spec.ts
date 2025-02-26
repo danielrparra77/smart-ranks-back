@@ -46,7 +46,7 @@ describe('InvoiceProvider', () => {
   describe('findAllInvoicesIds', () => {
     it('should find all invoices ids', async () => {
       const spy = jest.spyOn(model, 'find');
-      spy.mockResolvedValueOnce([mockData.id]);
+      spy.mockResolvedValueOnce([mockData]);
       expect(await invoiceProvider.findAllInvoicesIds()).toEqual([mockData.id]);
       expect(spy).toHaveBeenCalledTimes(1);
     });

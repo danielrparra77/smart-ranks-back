@@ -21,6 +21,7 @@ export class InvoiceService implements IInvoiceService {
 
   async upsertInvoice(invoice: Partial<IInvoice>): Promise<IInvoice> {
     const invoiceUpdated = await this.invoiceProvider.upsertInvoice(invoice);
-    return invoiceUpdated as unknown as IInvoice;
+    const invoiceIntrerface = invoiceUpdated as unknown as IInvoice;
+    return invoiceIntrerface;
   }
 }

@@ -13,13 +13,20 @@ export class UserService implements IUserService {
     private jwtService: JwtService,
   ) {}
 
+  async findUserData(filter: Partial<IUser>, credentials: IUserCredentials): Promise<IUser> {
+    const userModel = await this.userProvider.findUserByFilter(filter);
+    if (credentials.role !== RoleEnum.administrator && userModel?.email !== credentials.email)
+      throw new UnauthorizedException();
+    return userModel as IUser;
+  }
+
   async findUsers(): Promise<IUser[]> {
     const usersModel = await this.userProvider.findUsers();
     return usersModel as IUser[];
   }
 
-  async findUserByEmail(email: string): Promise<IUser> {
-    const userModel = await this.userProvider.findUserByEmail(email);
+  async findUserByFilter(filter: Partial<IUser>): Promise<IUser> {
+    const userModel = await this.userProvider.findUserByFilter(filter);
     return userModel as IUser;
   }
 
@@ -38,7 +45,7 @@ export class UserService implements IUserService {
   }
 
   async signIn(userEmail: string, pass: string): Promise<{ access_token: string; role: RoleEnum; }> {
-    const user = await this.findUserByEmail(userEmail);
+    const user = await this.findUserByFilter({email: userEmail});
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }

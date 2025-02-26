@@ -53,11 +53,11 @@ describe('UserProvider', () => {
     });
   });
 
-  describe('findUserByEmail', () => {
+  describe('findUserByFilter', () => {
     it('should find user by email', async () => {
       const spy = jest.spyOn(model, 'findOne');
       spy.mockResolvedValueOnce(mockData);
-      expect(await userProvider.findUserByEmail(mockData.email)).toEqual(mockData);
+      expect(await userProvider.findUserByFilter({email: mockData.email})).toEqual(mockData);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });

@@ -20,8 +20,8 @@ export class ProductProvider implements IProductProvider {
   }
 
   async upsertProduct(product: Partial<IProduct>): Promise<Product> {
-    const userUpdated = await this.productModel.findOneAndUpdate({id: product.id}, { $set: product }, {upsert: true});
-    return Product.build(userUpdated);
+    const userUpdated = await this.productModel.findOneAndUpdate({id: product.id}, { $set: product }, {upsert: true, returnDocument: 'after'});
+    return userUpdated;
   }
 
   async deleteProduct(id: string): Promise<void> {

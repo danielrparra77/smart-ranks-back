@@ -7,7 +7,7 @@ import { User, UserSchema } from '../schema/user.schema';
 import { Product, ProductSchema } from '../schema/product.schema';
 import { IProductProvider } from './product/product.provider';
 import { ProductProvider } from './product/impl/product.provider.impl';
-import { Invoice, InvoiceSchema } from 'src/schema/invoice.schema';
+import { Invoice, InvoiceSchema } from '../schema/invoice.schema';
 import { IInvoiceProvider } from './invoice/invoice.provider';
 import { InvoiceProvider } from './invoice/impl/invoice.provider.impl';
 

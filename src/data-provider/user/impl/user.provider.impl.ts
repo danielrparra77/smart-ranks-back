@@ -16,13 +16,13 @@ export class UserProvider implements IUserProvider {
     return await this.userModel.find({role: RoleEnum.user}, {password: false});
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
-    return await this.userModel.findOne({email});
+  async findUserByFilter(filter: Partial<IUser>): Promise<User | null> {
+    return await this.userModel.findOne(filter);
   }
 
   async upsertUser(user: Partial<IUser>): Promise<User> {
-    const userUpdated = await this.userModel.findOneAndUpdate({email: user.email}, { $set: user }, {upsert: true});
-    return User.build(userUpdated);
+    const userUpdated = await this.userModel.findOneAndUpdate({email: user.email}, { $set: user }, {upsert: true, returnDocument: 'after'});
+    return userUpdated;
   }
 
   async deleteUser(userEmail: string): Promise<void> {

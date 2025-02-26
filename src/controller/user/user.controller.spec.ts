@@ -8,12 +8,14 @@ import { userMock } from '../../../test/mock/user.mock';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from '../dto/user/user.dto';
 import { UserDeleteDto } from '../dto/user/user-delete.dto';
+import { UseFilterrDto } from '../dto/user/user.filter-dto';
 
 describe('UserController', () => {
   const mockData = User.build(userMock);
   const mockDataDTO = plainToInstance(UserDto, userMock);
   const userService: Partial<JestMockedClass<IUserService>> = {
     findUsers: jest.fn(),
+    findUserData: jest.fn(),
     signIn: jest.fn(),
     upsertUser: jest.fn(),
     deleteUser: jest.fn(),
@@ -55,6 +57,17 @@ describe('UserController', () => {
       const spy = jest.spyOn(provider, 'findUsers');
       spy.mockResolvedValueOnce([mockData]);
       expect(await userController.getUsers()).toEqual([mockData]);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getUser', () => {
+    const mockRequest: Partial<Request> = {userData: {}} as any;
+    const request = plainToInstance(UseFilterrDto, {_id:'3243535'});
+    it('should get user by filter', async () => {
+      const spy = jest.spyOn(provider, 'findUserData');
+      spy.mockResolvedValueOnce(mockData);
+      expect(await userController.getUser(request, mockRequest as any)).toEqual(mockData);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });

@@ -11,11 +11,19 @@ export abstract class IUserService {
    */
   abstract findUsers(): Promise<IUser[]>;
   /**
-   * find user by email in database
-   * @param email user email
+   * find user data
+   * @param filter user filter
+   * @param credentials user login credentials
    * @returns user data
    */
-  abstract findUserByEmail(email: string): Promise<IUser>;
+  abstract findUserData(filter: Partial<IUser>, credentials: IUserCredentials): Promise<IUser>;
+
+  /**
+   * find user by email in database
+   * @param filter user filter
+   * @returns user data
+   */
+  abstract findUserByFilter(filter: Partial<IUser>): Promise<IUser>;
 
   /**
    * create user if not exists, otherwise update user data

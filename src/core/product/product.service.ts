@@ -14,6 +14,13 @@ export abstract class IProductService {
   abstract findProductById(id: string): Promise<IProduct>;
 
   /**
+   * find products by id in database
+   * @param id product id
+   * @returns product data
+   */
+  abstract findProductsById(_ids: string[]): Promise<IProduct[]>;
+
+  /**
    * find product all products
    * @param credentials user login credentials
    * @returns products array

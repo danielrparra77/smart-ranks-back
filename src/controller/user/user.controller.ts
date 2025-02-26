@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, Req } from '@nestjs/common';
 import { IUserService } from '../../core/user/user.service';
 import { UserDto } from '../dto/user/user.dto';
 import { UserDeleteDto } from '../dto/user/user-delete.dto';
@@ -7,6 +7,7 @@ import { Roles } from '../../common/decorator/roles.decorator';
 import { RoleEnum } from '../../common/enum/role.enum';
 import { IUserCredentials } from '../../core/entity/user-credentials.entity';
 import { Request } from 'express';
+import { UseFilterrDto } from '../dto/user/user.filter-dto';
 
 @Controller({path: 'user'})
 export class UserController {
@@ -16,6 +17,15 @@ export class UserController {
   @Roles([RoleEnum.administrator])
   getUsers() {
     return this.userService.findUsers();
+  }
+
+  @Get('singular')
+  @Roles([RoleEnum.administrator, RoleEnum.user])
+  getUser(
+    @Query() filter: UseFilterrDto,
+    @Req() request: Request,
+  ) {
+    return this.userService.findUserData(filter, (request as any).userData as IUserCredentials);
   }
 
   @Post('login')

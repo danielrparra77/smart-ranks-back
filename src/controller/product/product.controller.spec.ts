@@ -9,6 +9,8 @@ import { productMock } from '../../../test/mock/product.mock';
 import { plainToInstance } from 'class-transformer';
 import { ProductDto } from '../dto/product/product.dto';
 import { PurchaseProductDto } from '../dto/product/purchase.dto';
+import { Invoice } from '../../schema/invoice.schema';
+import { invoiceMock } from '../../../test/mock/invoice.mock';
 
 describe('ProductController', () => {
   const mockData = Product.build(productMock);
@@ -16,6 +18,7 @@ describe('ProductController', () => {
   const purchaseDTO = plainToInstance(PurchaseProductDto, {products: [{id: uuidv4(), number: 1}]});
   const mockRequest: Partial<Request> = {userData: {}} as any;
   const productService: Partial<JestMockedClass<IProductService>> = {
+    findProductsById: jest.fn(),
     findAllProducts: jest.fn(),
     upsertProduct: jest.fn(),
     purchaseProduct: jest.fn(),
@@ -42,6 +45,15 @@ describe('ProductController', () => {
     jest.clearAllMocks();
   });
 
+  describe('findByIds', () => {
+    it('should findByIds products', async () => {
+      const spy = jest.spyOn(provider, 'findProductsById');
+      spy.mockResolvedValueOnce([mockData]);
+      expect(await productController.findByIds({_id:['dfgdg']})).toEqual([mockData]);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('findAll', () => {
     const token = {access_token: 'token'};
     it('should findAll products', async () => {
@@ -62,9 +74,11 @@ describe('ProductController', () => {
   });
 
   describe('purchaseProduct', () => {
+    const mockInvoice = Invoice.build(invoiceMock);
     it('should purchase product', async () => {
       const spy = jest.spyOn(provider, 'purchaseProduct');
-      await productController.purchaseProduct(purchaseDTO, mockRequest as any);
+      spy.mockResolvedValueOnce(mockInvoice as any)
+      expect(await productController.purchaseProduct(purchaseDTO, mockRequest as any)).toEqual(mockInvoice);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
