@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req } from '@nestjs/common';
 import { IUserService } from '../../core/user/user.service';
 import { UserDto } from '../dto/user/user.dto';
 import { UserDeleteDto } from '../dto/user/user-delete.dto';
@@ -11,6 +11,12 @@ import { Request } from 'express';
 @Controller({path: 'user'})
 export class UserController {
   constructor(private readonly userService: IUserService) {}
+
+  @Get()
+  @Roles([RoleEnum.administrator])
+  getUsers() {
+    return this.userService.findUsers();
+  }
 
   @Post('login')
   @AllowUnauthorizedRequest()

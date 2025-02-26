@@ -13,6 +13,11 @@ export class UserService implements IUserService {
     private jwtService: JwtService,
   ) {}
 
+  async findUsers(): Promise<IUser[]> {
+    const usersModel = await this.userProvider.findUsers();
+    return usersModel as IUser[];
+  }
+
   async findUserByEmail(email: string): Promise<IUser> {
     const userModel = await this.userProvider.findUserByEmail(email);
     return userModel as IUser;
@@ -32,7 +37,7 @@ export class UserService implements IUserService {
     await this.userProvider.deleteUser(userEmail);
   }
 
-  async signIn(userEmail: string, pass: string): Promise<{ access_token: string; }> {
+  async signIn(userEmail: string, pass: string): Promise<{ access_token: string; role: RoleEnum; }> {
     const user = await this.findUserByEmail(userEmail);
     if (user?.password !== pass) {
       throw new UnauthorizedException();
@@ -40,6 +45,7 @@ export class UserService implements IUserService {
     const payload = { email: user.email, id: user.id, role: user.role } as IUserCredentials;
     return {
       access_token: await this.jwtService.signAsync(payload),
+      role: user.role
     };
   }
 }

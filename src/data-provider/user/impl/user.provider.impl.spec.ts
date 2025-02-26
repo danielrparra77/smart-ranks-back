@@ -8,6 +8,7 @@ import { userMock } from '../../../../test/mock/user.mock';
 describe('UserProvider', () => {
   const mockData = User.build(userMock);
   const modelProvider: Partial<Model<User>> = {
+    find: jest.fn(),
     findOne: jest.fn(),
     findOneAndUpdate: jest.fn(),
     findOneAndDelete: jest.fn(),
@@ -41,6 +42,15 @@ describe('UserProvider', () => {
 
   afterEach(()=>{
     jest.clearAllMocks();
+  });
+
+  describe('findUsers', () => {
+    it('should find users', async () => {
+      const spy = jest.spyOn(model, 'find');
+      spy.mockResolvedValueOnce([mockData]);
+      expect(await userProvider.findUsers()).toEqual([mockData]);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('findUserByEmail', () => {

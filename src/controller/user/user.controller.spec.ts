@@ -13,6 +13,7 @@ describe('UserController', () => {
   const mockData = User.build(userMock);
   const mockDataDTO = plainToInstance(UserDto, userMock);
   const userService: Partial<JestMockedClass<IUserService>> = {
+    findUsers: jest.fn(),
     signIn: jest.fn(),
     upsertUser: jest.fn(),
     deleteUser: jest.fn(),
@@ -40,11 +41,20 @@ describe('UserController', () => {
   });
 
   describe('signIn', () => {
-    const token = {access_token: 'token'};
+    const token = {access_token: 'token', role: mockData.role};
     it('should sign in user', async () => {
       const spy = jest.spyOn(provider, 'signIn');
       spy.mockResolvedValueOnce(token);
       expect(await userController.signIn({email: mockData.email, password: mockData.password})).toEqual(token);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getUsers', () => {
+    it('should get users', async () => {
+      const spy = jest.spyOn(provider, 'findUsers');
+      spy.mockResolvedValueOnce([mockData]);
+      expect(await userController.getUsers()).toEqual([mockData]);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });

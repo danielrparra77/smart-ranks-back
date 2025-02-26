@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { IUser } from '../entity/user.entity';
 import { IUserCredentials } from '../entity/user-credentials.entity';
+import { RoleEnum } from '../../common/enum/role.enum';
 
 @Injectable()
 export abstract class IUserService {
+  /**
+   * find all users
+   * @returns user data
+   */
+  abstract findUsers(): Promise<IUser[]>;
   /**
    * find user by email in database
    * @param email user email
@@ -30,5 +36,5 @@ export abstract class IUserService {
    * @param userEmail email of user
    * @param pass user password
    */
-  abstract signIn( userEmail: string, pass: string): Promise<{ access_token: string }>;
+  abstract signIn( userEmail: string, pass: string): Promise<{ access_token: string, role: RoleEnum; }>;
 }

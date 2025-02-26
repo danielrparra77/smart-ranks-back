@@ -5,6 +5,12 @@ import { IUser } from '../../core/entity/user.entity';
 @Injectable()
 export abstract class IUserProvider {
   /**
+   * find all users
+   * @returns user data
+   */
+  abstract findUsers(): Promise<User[]>;
+
+  /**
    * find user by email in database
    * @param email user email
    * @returns user data

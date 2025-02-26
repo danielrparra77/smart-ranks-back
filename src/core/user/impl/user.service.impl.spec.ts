@@ -13,6 +13,7 @@ import { IUserCredentials } from '../../entity/user-credentials.entity';
 describe('UserService', () => {
   let mockData: User;
   const userProvider: JestMockedClass<IUserProvider> = {
+    findUsers: jest.fn(),
     findUserByEmail: jest.fn(),
     upsertUser: jest.fn(),
     deleteUser: jest.fn(),
@@ -57,6 +58,15 @@ describe('UserService', () => {
 
   afterEach(()=>{
     jest.clearAllMocks();
+  });
+
+  describe('findUsers', () => {
+    it('should find users', async () => {
+      const spy = jest.spyOn(userPProvider, 'findUsers');
+      spy.mockResolvedValueOnce([mockData]);
+      expect(await orderService.findUsers()).toEqual([mockData]);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('findUserByEmail', () => {
@@ -119,7 +129,7 @@ describe('UserService', () => {
       spy.mockResolvedValueOnce(mockData);
       const spyJWT = jest.spyOn(userPProvider, 'findUserByEmail');
       spy.mockResolvedValueOnce(mockData);
-      expect(await orderService.signIn(mockData.email, mockData.password)).toEqual({access_token: 'token'});
+      expect(await orderService.signIn(mockData.email, mockData.password)).toEqual({access_token: 'token', role: mockData.role});
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spyJWT).toHaveBeenCalledTimes(1);
     });
