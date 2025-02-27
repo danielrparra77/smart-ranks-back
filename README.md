@@ -58,18 +58,17 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
+## Enviroment variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+In order to exedcute locally this service it will be required the next enviromnt variables
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- PORT => port to deploy the service
+- MONGODBCON => connection string to get acces to mongodb service
+- DBNAME => mongodb database name
+- USERCOLLECTION => user collection that stores the service user data
+- PRODUCTCOLLECTION => product collection that stores the product data that will be purchase by the user
+- INVOICECOLLECTION => invoice collection that stores the invoices data
+- JWTSECRET => json web token secret, it is required in order to create users credentials
 
 ## Resources
 
